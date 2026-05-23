@@ -28,29 +28,30 @@ Complete the steps below and fill in the `> block` sections
 ### Installing and running OpenCV
 
 1. Examine the `pyproject.toml` what dependencies does it currently identify?
->
+> Currently, the dependencies list is empty.
 >
 2. Create a `.venv` in this folder using `uv venv`
 3. Activate the `venv` as instructed by `uv`
 4. In order to complete the project, we need to install OpenCV. Fill in the following:
   - What role does OpenCV have in this project?
-  >
+  > OpenCV is an open-source library which can be used to capture frames of the video and process them.
   - What is the `uv pip` command to install OpenCV?
-  > `uv pip install ????`
+  > `uv pip install opencv-python`
   - What is the URL of this library's git repo?
-  > [Insert URL Here](https://github.com/opencv/????-?????)
+  > [https://github.com/opencv/opencv](https://github.com/opencv/opencv)
 5. Add OpenCV to your project using the `uv add` command:
   > `uv add name-of-open-cv-library
 
 6. Have the dependencies in the `pyproject.toml` changed? If so, how?
-  >
+  > A first dependency appeared on the list: "opencv-python>=4.13.0.92",
   >
 7. Why did we use `uv add` over `uv pip`?
-  >
+  > uv add is a modern way to work with projects, also produces a lock file.
   >
 8. The `numpy` library is required for OpenCV. Should you add an explicit requirement for it? Why/Why not?
-  >
-  >
+  > Since OpenCV lists numpy as its dependency, it is not required to add an explicit requirement for it.
+  > It is still a good practice to add it to the project's toml file for clarity.
+  > 
 9. Commit the changes so far to git. Use the message `chore: add OpenCV dependency`
 10. Go to `preliminary/library_basics.py` and complete the required functionality.
 11. Commit your changes with `feat: save video frames`
