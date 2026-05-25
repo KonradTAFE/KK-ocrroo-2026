@@ -77,7 +77,7 @@ Tesseract consists of both an OCR Engine and a command line program. It is predo
 > - Google Tesseract OCR.
 > How does it suit the project requirements:
 > - easy to install,
-> - commonly used, with big documentation available,
+> - commonly used, big documentation available,
 > - can be used for offline processing.
 
 4. Use UV to add the dependency to your project and your `pyproject.toml`
