@@ -15,7 +15,8 @@ Make sure you read the docstrings C.A.R.E.F.U.L.Y (yes, I took the L to check th
 from pathlib import Path
 import cv2
 import numpy as np
-
+import pytesseract
+from PIL import Image
 
 VID_PATH = Path("resources/oop.mp4")
 
@@ -90,17 +91,22 @@ class CodingVideo:
       """
       if seconds < 0:
           raise ValueError("Frame must be in positive seconds.")
-      self.capture.set(cv2.CAP_PROP_POS_FRAMES, seconds)
+      img = self.get_frame_number_at_time(seconds)
+      self.capture.set(cv2.CAP_PROP_POS_FRAMES, img)
       _, frame = self.capture.read()
-      cv2.imwrite(output_path, frame)
+      cv2.imwrite("./resources/output.png", frame)
 
+    def read_text_from_image(self, img: str) -> None:
+        print()
+        print(pytesseract.image_to_string(img))
 
 def test():
     """Try out your class here"""
     oop = CodingVideo("resources/oop.mp4")
-    print(oop)
-    print(oop.get_frame_rgb_array(1))
-    oop.save_as_image(42)
+    # print(oop)
+    # print(oop.get_frame_rgb_array(1))
+    oop.save_as_image(223)
+    oop.read_text_from_image("./resources/output.png")
 
 if __name__ == '__main__':
     test()
