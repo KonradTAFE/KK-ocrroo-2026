@@ -46,7 +46,10 @@ class CodingVideo:
         ----------
         https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d
         """
-        return f"\nVideo metadata:\nFrames per second: {self.fps}\nFrame count: {self.frame_count}\nDuration: {self.duration} (s)"
+        return (f"\nVideo metadata:\n"
+                f"Frames per second: {self.fps:.2f}\n"
+                f"Frame count: {self.frame_count}\n"
+                f"Duration: {self.duration:.2f} (seconds)")
 
     def get_frame_number_at_time(self, seconds: int) -> int:
         """Given a time in seconds, returns the value of the nearest frame"""
@@ -84,29 +87,32 @@ class CodingVideo:
             raise ValueError("Failed to encode frame")
         return buf.tobytes()
 
-    def save_as_image(self, seconds: int, output_path: Path | str = 'output.png') -> None:
+    def save_as_image(self, seconds: int, output_path: Path | str = 'resources/output.png') -> str:
       """Saves the given frame as a png image
         Requires a OpenCV imgcodecs library to convert ndarray to png
         https://docs.opencv.org/3.4/d4/da8/group__imgcodecs.html
       """
       if seconds < 0:
           raise ValueError("Frame must be in positive seconds.")
-      img = self.get_frame_number_at_time(seconds)
-      self.capture.set(cv2.CAP_PROP_POS_FRAMES, img)
-      _, frame = self.capture.read()
-      cv2.imwrite("./resources/output.png", frame)
+      frame_number = self.get_frame_number_at_time(seconds)
+      self.capture.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+      ok, frame = self.capture.read()
+      if not ok:
+          raise ValueError("Could not read frame")
 
-    def read_text_from_image(self, img: str) -> None:
-        print()
-        print(pytesseract.image_to_string(img))
+      cv2.imwrite(output_path, frame)
+      return str(output_path)
+
+    def read_text_from_image(self, path: str) -> str:
+        return pytesseract.image_to_string(path)
 
 def test():
     """Try out your class here"""
     oop = CodingVideo("resources/oop.mp4")
     # print(oop)
     # print(oop.get_frame_rgb_array(1))
-    oop.save_as_image(223)
-    oop.read_text_from_image("./resources/output.png")
+    path = oop.save_as_image(223)
+    print(oop.read_text_from_image(path))
 
 if __name__ == '__main__':
     test()

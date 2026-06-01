@@ -4,11 +4,14 @@ Drive the API to complete "interprocess communication"
 
 Requirements
 """
-
+import pytesseract
 from fastapi import FastAPI, HTTPException
 from fastapi import Response
 from pydantic import BaseModel
 from pathlib import Path
+
+from starlette.responses import PlainTextResponse
+
 from library_basics import CodingVideo
 
 
@@ -86,3 +89,15 @@ def video_frame(vid: str, t: float):
       video.capture.release()
 
 # TODO: add enpoint to get ocr e.g. /video/{vid}/frame/{t}/ocr
+@app.get("/video/{vid}/frame/{t}/ocr", response_class=Response)
+def video_frame_ocr(vid: str, t: int):
+    video = _open_vid_or_404(vid)
+
+    frame = video.get_frame_number_at_time(t)
+    rgb = video.get_frame_rgb_array(frame)
+
+    return {
+        "video": vid,
+        "timestamp": t,
+        "text": pytesseract.image_to_string(rgb, lang="eng")
+    }
