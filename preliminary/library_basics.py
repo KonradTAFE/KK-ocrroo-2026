@@ -104,7 +104,7 @@ class CodingVideo:
       return str(output_path)
 
     def read_text_from_image(self, path: str) -> str:
-        return pytesseract.image_to_string(path)
+        return pytesseract.image_to_string(Image.open(path))
 
 def test():
     """Try out your class here"""
