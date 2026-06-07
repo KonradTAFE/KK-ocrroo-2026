@@ -46,7 +46,7 @@ Complete the steps below and fill in the `> block` sections
   > A first dependency appeared on the list: "opencv-python>=4.13.0.92",
   >
 7. Why did we use `uv add` over `uv pip`?
-  > uv add is a modern way to work with projects, also produces a lock file.
+  > uv add is a modern way to work with projects which produces a lock file.
   >
 8. The `numpy` library is required for OpenCV. Should you add an explicit requirement for it? Why/Why not?
   > Since OpenCV lists numpy as its dependency, it is not required to add an explicit requirement for it.
