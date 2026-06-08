@@ -109,5 +109,5 @@ FastAPI will allow us to enable communication with our OCR service from other pr
 6. Modify the simple_api.py so that it works correctly with your implementation and complete any TODO markers
 7. Demonstrate the use of at least two other end points below:
 >
->
->
+>![list_videos.png](list_videos.png)
+>![video_metadata.png](video_metadata.png)
