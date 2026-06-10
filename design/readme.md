@@ -33,15 +33,26 @@ Your persona should reflect the diversity of people with disabilities and their 
 
 What is the user journey? What are the steps the user takes to achieve their goals?
 
-- **Step 1**: [Description of the step]
-- **Step 2**: [Description of the step]
-- **Step 3**: [Description of the step]
-- **Step 4**: [Description of the step]
+- **Step 1**: User gets the list of videos using /video
+- **Step 2**: User picks a video and checks details using /video/{vid}
+- **Step 3**: User extracts a frame at a specific time using /video/{vid}/frame/{t}
+- **Step 4**: User runs OCR on the frame using /video/{vid}/frame/{t}/ocr to get text
 
 ## UI Interaction Patterns
 
 What are the UI interaction patterns you will use in your project?
+- Simple API design using clear URLs
+- Users move step-by-step from video → frame → OCR
+- Uses JSON for data and images for frames
+- Each request is independent (no login or session needed)
+- Links inside responses help users find the next step
 
 ## AI Prompts
 
 Write down any AI prompts you came up with after your first session
+- How to extract a video frame using OpenCV
+- How to convert an image to text using Tesseract OCR
+- How to build a simple FastAPI endpoint for video processing
+- How to return JSON and images in the same API
+- Why does FastAPI return an error when I return a dict with Response
+- What are Interaction Patterns

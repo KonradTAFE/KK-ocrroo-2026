@@ -28,6 +28,7 @@ A persona is a fictional character that represents a user. It is a way to descri
 
 > Describe the key persona your team is focused on implementing the design. You can describe the persona in a file called `persona.md` in the `design` folder.
 >
+> ## Covered in readme.md file
 
 
 ### Persona Template
@@ -36,22 +37,24 @@ This is an optional template for how to structure your persona:
 
 ```markdown
 # Persona: [Persona Name]
-
+## Covered in readme.md file
 ## Background
 Give the person's background - make sure we can understand their level of skills, knowledge, and experience.
-
+## Covered in readme.md file
 ## Goals
 Why does this person use the application? What are they trying to achieve?
-
+## Covered in readme.md file
 ## Needs
 What does this person need from the application? What are their pain points?
-
+## Covered in readme.md file
 ```
 
 ### Relevant issue
 >
 > Link to an issue that covers a pain point relevant to the persona and explain why it is relevant.
->
+> https://github.com/KonradTAFE/KK-ocrroo-2026/issues/1
+> 
+> The issue is relevant to Jeff as he is impatient and wants the tools he is using to be simple and effective.
 
 ### Validation
 
