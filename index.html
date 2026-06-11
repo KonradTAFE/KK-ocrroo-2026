@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video OCR - Smart Player</title>
+  <link rel="stylesheet" href="./resources/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎥 Video OCR Explorer</h1>
+      <select id="videoSelect" onchange="loadVideoMetadata()"></select>
+    </header>
+
+    <!-- Quick Controls -->
+    <div class="quick-controls">
+      <button onclick="togglePlay()">▶ Play</button>
+      <button onclick="seek(-10)">⏪ Back 10s</button>
+      <button onclick="seek(10)">⏩ Forward 10s</button>
+      <button onclick="toggleMute()">🔊 Mute</button>
+      <button onclick="runOCR()" class="primary">🔍 Scan Text</button>
+      <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+    </div>
+
+    <div class="main-content">
+      <!-- Video / Frame Area -->
+      <div class="video-area">
+        <img id="frameImage" src="" alt="Video Frame">
+        <div class="time-overlay">
+          <span id="currentTime">00:00</span>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="panel">
+          <h3>📊 Metadata</h3>
+          <pre id="metadata">Select a video...</pre>
+        </div>
+
+        <div class="panel">
+          <h3>⏱️ Jump to Time</h3>
+          <input type="number" id="seconds" value="223" placeholder="Seconds">
+          <button onclick="showFrame()" style="width:100%; margin-top:8px;">Show Frame</button>
+        </div>
+
+        <div class="panel">
+          <h3>⌨️ Shortcuts</h3>
+          <p><strong>Space</strong> - Play/Pause<br>
+             <strong>O</strong> - Scan Text<br>
+             <strong>F</strong> - Fullscreen</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transcript / OCR Result -->
+    <div class="panel transcript-panel">
+      <h3>📝 OCR Transcript</h3>
+      <div id="ocrResult" class="transcript">
+        Click <strong>Scan Text</strong> to extract text from current frame...
+      </div>
+    </div>
+  </div>
+
+  <script src="./resources/script.js"></script>
+</body>
+</html>

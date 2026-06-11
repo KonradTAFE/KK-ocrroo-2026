@@ -1,0 +1,100 @@
+body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #eee;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    header {
+      padding: 15px 20px;
+      background: #111;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 { margin: 0; font-size: 1.6rem; }
+
+    .quick-controls {
+      padding: 12px 20px;
+      background: #222;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 10px 16px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    button:hover { background: #555; }
+    button.active { background: #0066ff; }
+
+    .main-content {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+    .video-area {
+      flex: 2;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    #frameImage {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .sidebar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel {
+      background: #222;
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .panel h3 {
+      margin-top: 0;
+      color: #0af;
+    }
+
+    .transcript {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .transcript-item {
+      padding: 10px;
+      border-bottom: 1px solid #333;
+    }
+    .timestamp {
+      color: #0af;
+      font-weight: bold;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
