@@ -1,78 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video OCR Explorer</title>
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-  <!-- Your custom styles -->
-  <link rel="stylesheet" href="/static/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video OCR PLayer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" href="/static/styles.css"/>
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <header>
-      <h1><i class="fas fa-video"></i> Video OCR Explorer</h1>
-      <label for="videoSelect">Choose a video</label>
-      <select id="videoSelect" onchange="loadVideoMetadata()"></select>
+        <h1><i class="fas fa-video"></i> Video OCR Explorer</h1>
+        <div class="header-right">
+            <label for="videoSelect">Choose a video</label>
+            <select id="videoSelect" onchange="loadVideoMetadata()"></select>
+        </div>
     </header>
 
     <!-- Quick Controls -->
     <div class="quick-controls">
-      <button id="playBtn" onclick="togglePlay()">
-        <i class="fas fa-play"></i> <span id="playText">Play</span>
-      </button>
-      <button onclick="seek(-10)"><i class="fas fa-backward"></i> Back 10s</button>
-      <button onclick="seek(10)"><i class="fas fa-forward"></i> Forward 10s</button>
-      <button onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-high"></i> Mute</button>
-      <button onclick="runOCR()" class="primary"><i class="fas fa-magnifying-glass"></i> Scan Text</button>
-      <button onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Fullscreen</button>
+        <button id="playBtn" onclick="togglePlay()">
+            <i class="fas fa-play"></i> <span id="playText">Play</span>
+        </button>
+        <button onclick="seek(-10)"><i class="fas fa-backward"></i> Back 10s</button>
+        <button onclick="seek(10)"><i class="fas fa-forward"></i> Forward 10s</button>
+        <button onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-high"></i> Mute</button>
+        <button onclick="runOCR()" class="primary"><i class="fas fa-magnifying-glass"></i> Scan Text</button>
+        <button onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Fullscreen</button>
     </div>
 
     <div class="main-content">
-      <!-- Video Player Area -->
-      <div class="video-area">
-        <video id="videoPlayer" controls width="100%" height="auto">
-          Your browser does not support the video tag.
-        </video>
-        <div class="time-overlay" id="frameTime" style="display:none;">
-          <span id="currentTime">00:00</span>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="panel">
-          <h3><i class="fas fa-chart-bar"></i> Metadata</h3>
-          <pre id="metadata">Select a video...</pre>
+        <div class="video-container">
+            <div class="video-area">
+                <video id="videoPlayer" controls width="100%" height="auto">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <!-- OCR Transcript -->
+            <div class="panel transcript-panel">
+                <h3><i class="fas fa-file-alt"></i> OCR Transcript</h3>
+                <div id="ocrResult" class="transcript">
+                    Click <strong>Scan Text</strong> to extract text from current frame...
+                </div>
+            </div>
         </div>
 
-        <div class="panel">
-          <h3><i class="fas fa-clock"></i> Jump to Time</h3>
-          <input type="number" id="seconds" value="223" placeholder="Seconds" step="0.1">
-          <button onclick="jumpToTime()" style="width:100%; margin-top:8px;">Jump to Time</button>
-        </div>
+        <div class="sidebar">
+            <div class="panel">
+                <h3><i class="fas fa-chart-bar"></i> Metadata</h3>
+                <pre id="metadata">Select a video to see metadata...</pre>
+            </div>
 
-        <div class="panel">
-          <h3><i class="fas fa-keyboard"></i> Shortcuts</h3>
-          <p><strong>Space</strong> - Play/Pause<br>
-             <strong>O</strong> - Scan Text<br>
-             <strong>F</strong> - Fullscreen</p>
+            <div class="panel">
+                <h3><i class="fas fa-clock"></i> Jump to Time</h3>
+                <div class="time-inputs">
+                    <div>
+                        <label for="minutes">Minutes</label>
+                        <input type="number" id="minutes" value="" min="0">
+                    </div>
+                    <div>
+                        <label for="seconds">Seconds</label>
+                        <input type="number" id="seconds" value="" min="0" max="59">
+                    </div>
+                </div>
+                <button onclick="jumpToTime()" class="jump-btn">
+                    <i class="fas fa-arrow-right"></i> Jump to Time
+                </button>
+            </div>
+
+            <div class="panel">
+                <h3><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h3>
+                <div class="shortcuts-grid">
+                    <div class="shortcut-item"><strong>Space</strong><span> - Play / Pause</span></div>
+                    <div class="shortcut-item"><strong>O</strong><span> - Scan Text (OCR)</span></div>
+                    <div class="shortcut-item"><strong>F</strong><span> - Fullscreen</span></div>
+                    <div class="shortcut-item"><i class="fas fa-arrow-left"></i><span> - 10s Back</span></div>
+                    <div class="shortcut-item"><i class="fas fa-arrow-right"></i><span> - 10s Forward</span></div>
+                    <div class="shortcut-item"><i class="fas fa-arrow-up"></i><span> - Volume Up</span></div>
+                    <div class="shortcut-item"><i class="fas fa-arrow-down"></i><span> - Volume Down</span></div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- OCR Transcript -->
-    <div class="panel transcript-panel">
-      <h3><i class="fas fa-file-alt"></i> OCR Transcript</h3>
-      <div id="ocrResult" class="transcript">
-        Click <strong>Scan Text</strong> to extract text from current frame...
-      </div>
-    </div>
-  </div>
 
-  <script src="/static/script.js"></script>
+</div>
+
+<script src="/static/script.js"></script>
 </body>
 </html>

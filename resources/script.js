@@ -1,6 +1,4 @@
-// resources/script.js
-
-const API_BASE = "";  // Empty = same origin when served from FastAPI
+const API_BASE = "";
 
 let currentVideoId = "";
 let videoPlayer = null;
@@ -67,12 +65,12 @@ async function loadVideoMetadata() {
 // Load video source
 function loadVideoSource() {
   if (currentVideoId && videoPlayer) {
-    videoPlayer.src = "/static/oop.mp4";   // Change if your video path differs
+    videoPlayer.src = "/static/oop.mp4";
     videoPlayer.load();
   }
 }
 
-// Toggle Play/Pause
+// Play/Pause
 function togglePlay() {
   if (!videoPlayer) return;
 
@@ -107,30 +105,38 @@ function seek(seconds) {
 
 // Jump to time
 function jumpToTime() {
-  const seconds = parseFloat(document.getElementById("seconds").value);
-  if (videoPlayer && !isNaN(seconds)) {
-    videoPlayer.currentTime = seconds;
-    videoPlayer.play();
-    updatePlayButton(true);
+  const minutes = parseInt(document.getElementById("minutes").value) || 0;
+  const seconds = parseInt(document.getElementById("seconds").value) || 0;
+
+  const totalSeconds = (minutes * 60) + seconds;
+
+  if (videoPlayer) {
+    videoPlayer.currentTime = totalSeconds;
+  } else {
+    alert("Video player not ready. Please select a video first.");
   }
 }
 
 // OCR Function
 async function runOCR() {
-  const seconds = parseInt(document.getElementById("seconds").value) ||
-                  Math.floor(videoPlayer ? videoPlayer.currentTime : 223);
-
   if (!currentVideoId) {
     alert("Please select a video first");
     return;
   }
 
+  if (!videoPlayer || videoPlayer.currentTime <= 0) {
+    alert("Please play the video first to scan the current frame.");
+    return;
+  }
+
+  const seconds = Math.floor(videoPlayer.currentTime);
+
   const resultDiv = document.getElementById("ocrResult");
-  resultDiv.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Running OCR...</p>`;
+  resultDiv.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Running OCR at ${seconds}s...</p>`;
 
   try {
     const res = await fetch(`${API_BASE}/video/${currentVideoId}/frame/${seconds}/ocr`);
-    if (!res.ok) throw new Error("OCR failed");
+    if (!res.ok) throw new Error("OCR request failed");
 
     const data = await res.json();
 
@@ -144,7 +150,7 @@ async function runOCR() {
     console.error("OCR Error:", error);
     resultDiv.innerHTML = `
       <p style="color:#ff6666;">
-        <i class="fas fa-exclamation-triangle"></i> Failed to extract text. Try another time.
+        <i class="fas fa-exclamation-triangle"></i> Failed to extract text. Try again.
       </p>`;
   }
 }
