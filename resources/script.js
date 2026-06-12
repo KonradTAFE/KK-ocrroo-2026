@@ -1,9 +1,29 @@
 // resources/script.js
 
-const API_BASE = "http://127.0.0.1:8000";
-let currentVideoId = "";
+const API_BASE = "";  // Empty = same origin when served from FastAPI
 
-// Load list of videos when page loads
+let currentVideoId = "";
+let videoPlayer = null;
+let currentVolume = 1.0;
+let isMuted = false;
+
+// Initialize
+window.onload = () => {
+  videoPlayer = document.getElementById("videoPlayer");
+  loadVideos();
+
+  // Auto load demo video
+  setTimeout(() => {
+    const select = document.getElementById("videoSelect");
+    if (select.options.length > 1) {
+      select.value = "demo";
+      loadVideoMetadata();
+      loadVideoSource();
+    }
+  }, 800);
+};
+
+// Load list of videos
 async function loadVideos() {
   try {
     const res = await fetch(`${API_BASE}/video`);
@@ -22,46 +42,83 @@ async function loadVideos() {
     });
   } catch (error) {
     console.error("Error loading videos:", error);
-    alert("Could not connect to the FastAPI server. Make sure it's running.");
   }
 }
 
-// Load metadata when a video is selected
+// Load metadata
 async function loadVideoMetadata() {
   currentVideoId = document.getElementById("videoSelect").value;
   if (!currentVideoId) return;
 
   try {
     const res = await fetch(`${API_BASE}/video/${currentVideoId}`);
-    if (!res.ok) throw new Error("Video not found");
+    if (!res.ok) throw new Error("Failed to load metadata");
 
     const data = await res.json();
     document.getElementById("metadata").textContent = JSON.stringify(data, null, 2);
+
+    loadVideoSource();
   } catch (error) {
     console.error("Error loading metadata:", error);
     document.getElementById("metadata").textContent = "Error loading metadata";
   }
 }
 
-// Show frame at selected time
-async function showFrame() {
-  const secondsInput = document.getElementById("seconds");
-  const seconds = parseFloat(secondsInput.value);
-
-  if (!currentVideoId) {
-    alert("Please select a video first");
-    return;
+// Load video source
+function loadVideoSource() {
+  if (currentVideoId && videoPlayer) {
+    videoPlayer.src = "/static/oop.mp4";   // Change if your video path differs
+    videoPlayer.load();
   }
-
-  document.getElementById("currentTime").textContent = seconds.toFixed(1);
-
-  const img = document.getElementById("frameImage");
-  img.src = `${API_BASE}/video/${currentVideoId}/frame/${seconds}`;
 }
 
-// Run OCR on current frame
+// Toggle Play/Pause
+function togglePlay() {
+  if (!videoPlayer) return;
+
+  if (!videoPlayer.src) loadVideoSource();
+
+  if (videoPlayer.paused) {
+    videoPlayer.play();
+    updatePlayButton(true);
+  } else {
+    videoPlayer.pause();
+    updatePlayButton(false);
+  }
+}
+
+function updatePlayButton(isPlaying) {
+  const icon = document.querySelector("#playBtn i");
+  const text = document.getElementById("playText");
+
+  if (isPlaying) {
+    icon.classList.replace("fa-play", "fa-pause");
+    text.textContent = "Pause";
+  } else {
+    icon.classList.replace("fa-pause", "fa-play");
+    text.textContent = "Play";
+  }
+}
+
+// Seek
+function seek(seconds) {
+  if (videoPlayer) videoPlayer.currentTime += seconds;
+}
+
+// Jump to time
+function jumpToTime() {
+  const seconds = parseFloat(document.getElementById("seconds").value);
+  if (videoPlayer && !isNaN(seconds)) {
+    videoPlayer.currentTime = seconds;
+    videoPlayer.play();
+    updatePlayButton(true);
+  }
+}
+
+// OCR Function
 async function runOCR() {
-  const seconds = parseInt(document.getElementById("seconds").value);
+  const seconds = parseInt(document.getElementById("seconds").value) ||
+                  Math.floor(videoPlayer ? videoPlayer.currentTime : 223);
 
   if (!currentVideoId) {
     alert("Please select a video first");
@@ -69,53 +126,56 @@ async function runOCR() {
   }
 
   const resultDiv = document.getElementById("ocrResult");
-  resultDiv.innerHTML = "<p>🔄 Running OCR... Please wait.</p>";
+  resultDiv.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Running OCR...</p>`;
 
   try {
     const res = await fetch(`${API_BASE}/video/${currentVideoId}/frame/${seconds}/ocr`);
-    if (!res.ok) throw new Error("OCR request failed");
+    if (!res.ok) throw new Error("OCR failed");
 
     const data = await res.json();
 
     resultDiv.innerHTML = `
-      <strong>Time:</strong> ${data.timestamp}s<br><br>
+      <strong><i class="fas fa-clock"></i> Time:</strong> ${data.timestamp}s<br><br>
       ${data.text 
-        ? data.text.replace(/\n/g, '<br>') 
-        : '<em>No text detected in this frame.</em>'}
+        ? `<i class="fas fa-quote-left"></i> ${data.text.replace(/\n/g, '<br>')}` 
+        : '<i class="fas fa-info-circle"></i> No text detected in this frame.'}
     `;
   } catch (error) {
     console.error("OCR Error:", error);
-    resultDiv.innerHTML = `<p style="color:#ff6666;">❌ Failed to extract text. Try another time.</p>`;
+    resultDiv.innerHTML = `
+      <p style="color:#ff6666;">
+        <i class="fas fa-exclamation-triangle"></i> Failed to extract text. Try another time.
+      </p>`;
   }
 }
 
-// Seek forward or backward
-function seek(delta) {
-  const secondsInput = document.getElementById("seconds");
-  let current = parseFloat(secondsInput.value) || 0;
-  secondsInput.value = Math.max(0, current + delta);
-  showFrame();
+// Volume Control
+function changeVolume(delta) {
+  if (!videoPlayer) return;
+
+  currentVolume = Math.max(0, Math.min(1, currentVolume + delta));
+  videoPlayer.volume = currentVolume;
 }
 
-// Dummy functions for controls
-function togglePlay() {
-  alert("🎬 Video playback simulation.\n\nUse the time input + 'Show Frame' button for now.");
-}
-
+// Mute Toggle
 function toggleMute() {
-  alert("🔇 Mute toggled (demo)");
+  if (!videoPlayer) return;
+
+  isMuted = !isMuted;
+  videoPlayer.muted = isMuted;
+
+  const icon = document.getElementById("muteIcon");
+  icon.classList.toggle("fa-volume-high", !isMuted);
+  icon.classList.toggle("fa-volume-xmark", isMuted);
 }
 
+// Fullscreen
 function toggleFullscreen() {
   const videoArea = document.querySelector(".video-area");
-  if (videoArea.requestFullscreen) {
-    videoArea.requestFullscreen();
-  } else {
-    alert("Fullscreen not supported in this browser");
-  }
+  if (videoArea.requestFullscreen) videoArea.requestFullscreen();
 }
 
-// Keyboard shortcuts
+// Keyboard Shortcuts
 document.addEventListener("keydown", (e) => {
   switch(e.key) {
     case "o":
@@ -132,12 +192,17 @@ document.addEventListener("keydown", (e) => {
     case "ArrowLeft":
       seek(-10);
       break;
+    case "ArrowUp":
+      e.preventDefault();
+      changeVolume(0.1);
+      break;
+    case "ArrowDown":
+      e.preventDefault();
+      changeVolume(-0.1);
+      break;
     case " ":
       e.preventDefault();
       togglePlay();
       break;
   }
 });
-
-// Initialize everything when page loads
-window.onload = loadVideos;

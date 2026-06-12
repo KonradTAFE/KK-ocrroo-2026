@@ -7,6 +7,8 @@ Requirements
 import pytesseract
 from fastapi import FastAPI, HTTPException
 from fastapi import Response
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from pathlib import Path
 
@@ -100,3 +102,14 @@ def video_frame_ocr(vid: str, t: int):
         "timestamp": t,
         "text": pytesseract.image_to_string(rgb, lang="eng")
     }
+
+static_path = Path("resources")   # Change if your folder is named differently
+
+if static_path.exists():
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+    @app.get("/", include_in_schema=False)
+    async def serve_home():
+        return FileResponse("index.html")   # Put index.html in the root folder
+else:
+    print("Warning: resources folder not found")

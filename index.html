@@ -3,31 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video OCR - Smart Player</title>
-  <link rel="stylesheet" href="./resources/styles.css" />
+  <title>Video OCR Explorer</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Your custom styles -->
+  <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🎥 Video OCR Explorer</h1>
+      <h1><i class="fas fa-video"></i> Video OCR Explorer</h1>
+      <label for="videoSelect">Choose a video</label>
       <select id="videoSelect" onchange="loadVideoMetadata()"></select>
     </header>
 
     <!-- Quick Controls -->
     <div class="quick-controls">
-      <button onclick="togglePlay()">▶ Play</button>
-      <button onclick="seek(-10)">⏪ Back 10s</button>
-      <button onclick="seek(10)">⏩ Forward 10s</button>
-      <button onclick="toggleMute()">🔊 Mute</button>
-      <button onclick="runOCR()" class="primary">🔍 Scan Text</button>
-      <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+      <button id="playBtn" onclick="togglePlay()">
+        <i class="fas fa-play"></i> <span id="playText">Play</span>
+      </button>
+      <button onclick="seek(-10)"><i class="fas fa-backward"></i> Back 10s</button>
+      <button onclick="seek(10)"><i class="fas fa-forward"></i> Forward 10s</button>
+      <button onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-high"></i> Mute</button>
+      <button onclick="runOCR()" class="primary"><i class="fas fa-magnifying-glass"></i> Scan Text</button>
+      <button onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Fullscreen</button>
     </div>
 
     <div class="main-content">
-      <!-- Video / Frame Area -->
+      <!-- Video Player Area -->
       <div class="video-area">
-        <img id="frameImage" src="" alt="Video Frame">
-        <div class="time-overlay">
+        <video id="videoPlayer" controls width="100%" height="auto">
+          Your browser does not support the video tag.
+        </video>
+        <div class="time-overlay" id="frameTime" style="display:none;">
           <span id="currentTime">00:00</span>
         </div>
       </div>
@@ -35,18 +45,18 @@
       <!-- Sidebar -->
       <div class="sidebar">
         <div class="panel">
-          <h3>📊 Metadata</h3>
+          <h3><i class="fas fa-chart-bar"></i> Metadata</h3>
           <pre id="metadata">Select a video...</pre>
         </div>
 
         <div class="panel">
-          <h3>⏱️ Jump to Time</h3>
-          <input type="number" id="seconds" value="223" placeholder="Seconds">
-          <button onclick="showFrame()" style="width:100%; margin-top:8px;">Show Frame</button>
+          <h3><i class="fas fa-clock"></i> Jump to Time</h3>
+          <input type="number" id="seconds" value="223" placeholder="Seconds" step="0.1">
+          <button onclick="jumpToTime()" style="width:100%; margin-top:8px;">Jump to Time</button>
         </div>
 
         <div class="panel">
-          <h3>⌨️ Shortcuts</h3>
+          <h3><i class="fas fa-keyboard"></i> Shortcuts</h3>
           <p><strong>Space</strong> - Play/Pause<br>
              <strong>O</strong> - Scan Text<br>
              <strong>F</strong> - Fullscreen</p>
@@ -54,15 +64,15 @@
       </div>
     </div>
 
-    <!-- Transcript / OCR Result -->
+    <!-- OCR Transcript -->
     <div class="panel transcript-panel">
-      <h3>📝 OCR Transcript</h3>
+      <h3><i class="fas fa-file-alt"></i> OCR Transcript</h3>
       <div id="ocrResult" class="transcript">
         Click <strong>Scan Text</strong> to extract text from current frame...
       </div>
     </div>
   </div>
 
-  <script src="./resources/script.js"></script>
+  <script src="/static/script.js"></script>
 </body>
 </html>
