@@ -212,3 +212,50 @@ document.addEventListener("keydown", (e) => {
       break;
   }
 });
+
+// Theme Personalization
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  let newTheme;
+
+  if (currentTheme === "dark") newTheme = "light";
+  else newTheme = "dark";
+
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+
+  // Update icon
+  const icon = document.querySelector("#themeToggle i");
+  if (newTheme === "light") {
+    icon.classList.replace("fa-moon", "fa-sun");
+  } else {
+    icon.classList.replace("fa-sun", "fa-moon");
+  }
+}
+
+// Load saved theme
+function loadSavedTheme() {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+
+  const icon = document.querySelector("#themeToggle i");
+  if (savedTheme === "light") {
+    icon.classList.replace("fa-moon", "fa-sun");
+  }
+}
+
+// Call this in window.onload
+window.onload = () => {
+  videoPlayer = document.getElementById("videoPlayer");
+  loadVideos();
+  loadSavedTheme();   // ← Add this line
+
+  setTimeout(() => {
+    const select = document.getElementById("videoSelect");
+    if (select.options.length > 1) {
+      select.value = "demo";
+      loadVideoMetadata();
+      loadVideoSource();
+    }
+  }, 800);
+};

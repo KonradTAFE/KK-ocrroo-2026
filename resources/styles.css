@@ -1,3 +1,27 @@
+/* ====================== CSS Variables ====================== */
+:root {
+  /* Dark Theme (Default) */
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --panel-bg: #1a1a1a;
+  --accent: #00ccff;
+  --text-primary: #e0e0e0;
+  --text-secondary: #aaaaaa;
+  --border: #333333;
+}
+
+[data-theme="light"] {
+  /* Light Theme */
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --panel-bg: #ffffff;
+  --accent: #0066ff;
+  --text-primary: #222222;
+  --text-secondary: #555555;
+  --border: #dddddd;
+}
+
+/* ====================== Base Styles ====================== */
 * {
   margin: 0;
   padding: 0;
@@ -6,31 +30,35 @@
 
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #0a0a0a;
-  color: #e0e0e0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
 .container {
   max-width: 1600px;
   margin: 20px auto;
-  background: #111;
+  background: var(--bg-primary);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
-/* Header */
+/* ====================== Header ====================== */
 header {
-  padding: 15px 20px;
-  background: #0a0a0a;
+  padding: 16px 24px;
+  background: var(--bg-secondary);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #222;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
 }
 
 header h1 {
   font-size: 1.7rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .header-right {
@@ -39,13 +67,13 @@ header h1 {
   gap: 12px;
 }
 
-/* Quick Controls */
+/* ====================== Quick Controls ====================== */
 .quick-controls {
-  padding: 12px 20px;
-  background: #1a1a1a;
+  padding: 12px 24px;
+  background: var(--bg-secondary);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .quick-controls button {
@@ -58,27 +86,37 @@ header h1 {
   display: flex;
   align-items: center;
   gap: 6px;
+  transition: all 0.2s;
 }
 
 .quick-controls button:hover {
   background: #333;
+  transform: translateY(-1px);
 }
 
 .quick-controls button.primary {
-  background: #00aaff;
+  background: var(--accent);
 }
 
-/* Main Layout */
+[data-theme="light"] .quick-controls button {
+  background: #444;
+  color: white;
+}
+
+/* ====================== Main Content ====================== */
 .main-content {
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  gap: 24px;
+  padding: 24px;
   flex-wrap: wrap;
 }
 
 .video-container {
   flex: 2;
-  min-width: 650px;
+  min-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .video-area {
@@ -90,104 +128,131 @@ header h1 {
 
 .video-area video {
   width: 100%;
-  height: auto;
-  max-height: 75vh;
+  height: 100%;
+  display: block;
 }
 
 /* Sidebar */
 .sidebar {
   flex: 1;
-  min-width: 340px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
+  min-width: 340px;
 }
 
 .panel {
-  background: #1a1a1a;
+  background: var(--panel-bg);
   border-radius: 10px;
-  padding: 16px;
-  border: 1px solid #222;
+  padding: 18px;
+  border: 1px solid var(--border);
 }
 
 .panel h3 {
-  color: #00ccff;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Metadata */
+pre {
+  background: #0a0a0a;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+[data-theme="light"] pre {
+  background: #f0f0f0;
 }
 
 /* Jump to Time */
 .time-inputs {
   display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.time-inputs div {
-  flex: 1;
+  gap: 16px;
+  margin-bottom: 14px;
 }
 
 .time-inputs label {
   display: block;
-  color: #aaa;
   font-size: 0.85rem;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
 .time-inputs input {
   width: 100%;
   padding: 10px;
-  background: #222;
-  border: 1px solid #444;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  color: white;
+  color: var(--text-primary);
 }
 
 .jump-btn {
   width: 100%;
   padding: 12px;
-  background: #00aaff;
+  background: var(--accent);
   color: white;
   border: none;
   border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 /* Shortcuts */
 .shortcuts-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px 16px;
 }
 
 .shortcut-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+
+.shortcut-item i {
+  width: 24px;
+  color: var(--accent);
 }
 
 /* Transcript */
 .transcript-panel {
-  background: #1a1a1a;
+  background: var(--panel-bg);
   border-radius: 10px;
-  padding: 16px;
-  border: 1px solid #222;
-  margin-top: 10px;
+  padding: 18px;
+  border: 1px solid var(--border);
 }
 
 .transcript {
-  background: #111;
-  padding: 14px;
+  background: #0a0a0a;
+  padding: 16px;
   border-radius: 8px;
-  max-height: 220px;
+  max-height: 260px;
   overflow-y: auto;
+  line-height: 1.6;
   white-space: pre-wrap;
 }
-.ocr-text {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  padding: 12px;
-  background: #1a1a1a;
+
+[data-theme="light"] .transcript {
+  background: #f8f8f8;
+}
+
+/* Theme Toggle Button */
+.theme-btn {
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  border-left: 4px solid #00ccff;
+  color: var(--text-primary);
+  cursor: pointer;
 }
 
 /* Responsive */
