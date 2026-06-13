@@ -12,8 +12,6 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from pathlib import Path
 
-from starlette.responses import PlainTextResponse
-
 from library_basics import CodingVideo
 
 

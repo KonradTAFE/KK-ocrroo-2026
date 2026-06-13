@@ -117,7 +117,7 @@ function jumpToTime() {
   }
 }
 
-// OCR Function
+// OCR
 async function runOCR() {
   if (!currentVideoId) {
     alert("Please select a video first");
@@ -139,11 +139,11 @@ async function runOCR() {
     if (!res.ok) throw new Error("OCR request failed");
 
     const data = await res.json();
+    let cleanText = data.text ? data.text.trim() : "";
 
     resultDiv.innerHTML = `
-      <strong><i class="fas fa-clock"></i> Time:</strong> ${data.timestamp}s<br><br>
-      ${data.text 
-        ? `<i class="fas fa-quote-left"></i> ${data.text.replace(/\n/g, '<br>')}` 
+      ${cleanText 
+        ? `<div class="ocr-text">${cleanText}</div>` 
         : '<i class="fas fa-info-circle"></i> No text detected in this frame.'}
     `;
   } catch (error) {
