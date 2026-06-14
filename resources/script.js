@@ -19,7 +19,7 @@ window.onload = () => {
   }, 600);
 };
 
-// Core functions
+// Load videos from the resources folder
 async function loadVideos() {
   const res = await fetch(`${API_BASE}/video`);
   const data = await res.json();
