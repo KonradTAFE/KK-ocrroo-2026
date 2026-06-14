@@ -1,4 +1,4 @@
-"""Provides a simple API for your basic OCR client"""
+"""Provides a simple API for OCR client"""
 
 import pytesseract
 from fastapi import FastAPI, HTTPException
@@ -32,7 +32,7 @@ def _open_vid_or_404(vid: str) -> CodingVideo:
     except ValueError as e:
         raise HTTPException(status_code=400, detail=f"Could not open video: {e}")
 
-
+# Video list
 @app.get("/video")
 def list_videos():
     return {
@@ -50,7 +50,7 @@ def list_videos():
         ]
     }
 
-
+# Metadata
 @app.get("/video/{vid}", response_model=VideoMetaData)
 def get_video(vid: str):
     video = _open_vid_or_404(vid)
@@ -68,7 +68,7 @@ def get_video(vid: str):
     finally:
         video.capture.release()
 
-
+# Frame extraction
 @app.get("/video/{vid}/frame/{t}", response_class=Response)
 def video_frame(vid: str, t: float):
     video = _open_vid_or_404(vid)
@@ -81,7 +81,7 @@ def video_frame(vid: str, t: float):
         video.capture.release()
 
 
-# Improved OCR Endpoint - Handles cleaning on backend
+# OCR - text extraction
 @app.get("/video/{vid}/ocr")
 def video_ocr(vid: str, t: float = None):
     """Perform OCR at a specific time or current video time"""
@@ -106,7 +106,7 @@ def video_ocr(vid: str, t: float = None):
         video.capture.release()
 
 
-# Serve static files (HTML, CSS, JS, Video)
+# Serve static files
 static_path = Path("resources")
 if static_path.exists():
     app.mount("/static", StaticFiles(directory=static_path), name="static")

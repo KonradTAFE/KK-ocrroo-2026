@@ -33,6 +33,7 @@ async function loadVideos() {
   });
 }
 
+// Metadata
 async function loadVideoMetadata() {
   currentVideoId = document.getElementById("videoSelect").value;
   if (!currentVideoId) return;
@@ -43,13 +44,15 @@ async function loadVideoMetadata() {
   loadVideoSource();
 }
 
+// Load videos list
 function loadVideoSource() {
   if (currentVideoId && videoPlayer) {
-    videoPlayer.src = "/static/oop.mp4";
+    videoPlayer.src = "/static/";
     videoPlayer.load();
   }
 }
 
+// Play/pause
 function togglePlay() {
   if (!videoPlayer) return;
   if (!videoPlayer.src) loadVideoSource();
@@ -65,17 +68,19 @@ function togglePlay() {
   }
 }
 
+// Jump by n seconds
 function seek(seconds) {
   if (videoPlayer) videoPlayer.currentTime += seconds;
 }
 
+// Jump to chosed timestamp
 function jumpToTime() {
   const min = parseInt(document.getElementById("minutes").value) || 0;
   const sec = parseInt(document.getElementById("seconds").value) || 0;
   if (videoPlayer) videoPlayer.currentTime = min * 60 + sec;
 }
 
-// Simplified OCR - delegates cleaning to backend
+// OCR
 async function runOCR() {
   if (!currentVideoId || !videoPlayer || videoPlayer.currentTime <= 0) {
     alert("Please play the video first then click Scan Text");
@@ -99,7 +104,7 @@ async function runOCR() {
   }
 }
 
-// Theme Support
+// Theme Selection
 function toggleTheme() {
   const isLight = document.documentElement.getAttribute("data-theme") === "light";
   const newTheme = isLight ? "dark" : "light";
@@ -116,7 +121,7 @@ function loadSavedTheme() {
   document.documentElement.setAttribute("data-theme", theme);
 }
 
-// Keyboard Shortcuts (kept minimal)
+// Keyboard Shortcuts
 document.addEventListener("keydown", e => {
   if (e.key === "o" || e.key === "O") runOCR();
   if (e.key === "f" || e.key === "F") document.querySelector(".video-area")?.requestFullscreen();
