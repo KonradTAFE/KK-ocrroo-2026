@@ -12,47 +12,69 @@ window.onload = () => {
   setTimeout(() => {
     const select = document.getElementById("videoSelect");
     if (select.options.length > 1) {
-      select.value = "demo";
+      select.value = "oop";           // ← Changed to "oop"
       loadVideoMetadata();
-      loadVideoSource();
     }
   }, 600);
 };
 
-// Load videos from the resources folder
+// Load videos list
 async function loadVideos() {
-  const res = await fetch(`${API_BASE}/video`);
-  const data = await res.json();
-  const select = document.getElementById("videoSelect");
-  select.innerHTML = '<option value="">-- Select Video --</option>';
-  data.videos.forEach(v => {
-    const opt = document.createElement("option");
-    opt.value = v.id;
-    opt.textContent = v.id.toUpperCase();
-    select.appendChild(opt);
-  });
+  try {
+    const res = await fetch(`${API_BASE}/video`);
+    const data = await res.json();
+    const select = document.getElementById("videoSelect");
+
+    select.innerHTML = '<option value="">-- Select Video --</option>';
+
+    data.videos.forEach(v => {
+      const opt = document.createElement("option");
+      opt.value = v.id;
+      opt.textContent = v.id.toUpperCase();
+      select.appendChild(opt);
+    });
+  } catch (error) {
+    console.error("Error loading videos:", error);
+  }
 }
 
-// Metadata
+// Load metadata and video
 async function loadVideoMetadata() {
   currentVideoId = document.getElementById("videoSelect").value;
   if (!currentVideoId) return;
 
-  const res = await fetch(`${API_BASE}/video/${currentVideoId}`);
-  const data = await res.json();
-  document.getElementById("metadata").textContent = JSON.stringify(data, null, 2);
-  loadVideoSource();
+  try {
+    const res = await fetch(`${API_BASE}/video/${currentVideoId}`);
+    const data = await res.json();
+    document.getElementById("metadata").textContent = JSON.stringify(data, null, 2);
+
+    await loadVideoSource();
+  } catch (error) {
+    console.error("Error loading metadata:", error);
+  }
 }
 
-// Load videos list
-function loadVideoSource() {
-  if (currentVideoId && videoPlayer) {
-    videoPlayer.src = "/static/";
+// Load video
+async function loadVideoSource() {
+  if (!currentVideoId || !videoPlayer) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/video/${currentVideoId}`);
+    const data = await res.json();
+
+    const filename = data.filename || "oop.mp4";
+
+    videoPlayer.src = `/static/${filename}`;
+    videoPlayer.load();
+    console.log(`Loading video: ${filename}`);
+  } catch (error) {
+    console.error("Failed to load video:", error);
+    videoPlayer.src = `/static/oop.mp4`;
     videoPlayer.load();
   }
 }
 
-// Play/pause
+// Play/Pause
 function togglePlay() {
   if (!videoPlayer) return;
   if (!videoPlayer.src) loadVideoSource();
@@ -68,19 +90,16 @@ function togglePlay() {
   }
 }
 
-// Jump by n seconds
 function seek(seconds) {
   if (videoPlayer) videoPlayer.currentTime += seconds;
 }
 
-// Jump to chosed timestamp
 function jumpToTime() {
   const min = parseInt(document.getElementById("minutes").value) || 0;
   const sec = parseInt(document.getElementById("seconds").value) || 0;
   if (videoPlayer) videoPlayer.currentTime = min * 60 + sec;
 }
 
-// OCR
 async function runOCR() {
   if (!currentVideoId || !videoPlayer || videoPlayer.currentTime <= 0) {
     alert("Please play the video first then click Scan Text");
@@ -95,16 +114,15 @@ async function runOCR() {
     const res = await fetch(`${API_BASE}/video/${currentVideoId}/ocr?t=${seconds}`);
     const data = await res.json();
 
-    resultDiv.innerHTML = `${data.text 
-        ? `<div class="ocr-text">${data.text}</div>` 
-        : '<em>No text detected.</em>'}
-    `;
+    resultDiv.innerHTML = data.text
+      ? `<div class="ocr-text">${data.text}</div>`
+      : `<em>No text detected.</em>`;
   } catch (e) {
     resultDiv.innerHTML = `<p style="color:#ff6666;">OCR failed</p>`;
   }
 }
 
-// Theme Selection
+// Theme
 function toggleTheme() {
   const isLight = document.documentElement.getAttribute("data-theme") === "light";
   const newTheme = isLight ? "dark" : "light";

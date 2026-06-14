@@ -13,7 +13,7 @@ app = FastAPI(title="Video OCR Explorer")
 
 # Video Database
 VIDEOS: dict[str, Path] = {
-    "demo": Path("resources/oop.mp4")
+    "oop": Path("resources/oop.mp4")
 }
 
 class VideoMetaData(BaseModel):
@@ -40,6 +40,7 @@ def list_videos():
         "videos": [
             {
                 "id": vid,
+                "filename": path.name,
                 "path": str(path),
                 "_links": {
                     "self": f"/video/{vid}",
